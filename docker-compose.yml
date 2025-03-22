@@ -94,27 +94,6 @@ services:
     - INSECURENET_HOST_IP=${INSECURENET_HOST_IP}
     - NATS_SURVEYOR_SERVERS=${NATS_SURVEYOR_SERVERS}
 
-  tp1:
-    build:
-      context: ./tp1
-      dockerfile: Dockerfile
-    init: true
-    container_name: tp1
-    networks:
-      intnet:
-    command: ['/bin/bash', '/config/configure-processor.sh']
-    volumes:
-      - ./config:/config
-      - ./code/tp1:/code/tp1
-        - NATS_SURVEYOR_SERVERS=nats://nats:4222
-    environment:
-      - SECURE_NET=${SECURE_NET}
-      - SECURENET_GATEWAY=${SECURENET_GATEWAY}
-      - INSECURE_NET=${INSECURE_NET}
-      - INSECURENET_GATEWAY=${INSECURENET_GATEWAY}
-      - SECURENET_HOST_IP=${SECURENET_HOST_IP}
-      - INSECURENET_HOST_IP=${INSECURENET_HOST_IP}
-      - NATS_SURVEYOR_SERVERS=${NATS_SURVEYOR_SERVERS}
     
 
   insec:
