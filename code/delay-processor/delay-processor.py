@@ -30,7 +30,7 @@ async def run():
         data = msg.data #.decode()
         #print(f"Received a message on '{subject}': {data}")
         packet = Ether(data)
-        print(packet.show())
+        print("Received packet",packet.show())
         # Publish the received message to outpktsec and outpktinsec after adding a delay
         delay = random.expovariate(1 / 5e-6)
         await asyncio.sleep(delay * 1000)  # Convert to milliseconds
