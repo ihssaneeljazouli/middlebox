@@ -5,7 +5,6 @@ Ihssane EL JAZOULI
 
 Introduction
 In this project, I modified the middlebox system to develop a processor in Python that introduces random delays to Ethernet frames. The project was based on an example from the GitHub repository, where I followed the instructions to run the containers and verify the system's basic functionality before making my modifications. The delay processor was then added to handle the introduction of delays to the packets, which also includes calculating the round-trip time (RTT) and includes functions to plot the results.
-
 Process Overview
 I first followed the example provided in the GitHub repository to run the containers. This step worked correctly, and the system functioned as expected. Afterward, I moved on to adding my custom delay processor.
 I created a new Python file, delay-processor.py, which introduces random delays to the packets. The delays are generated using an exponential distribution, and the script also calculates the round-trip time (RTT) of the packets. Additionally, functions to plot the RTT and delay statistics are integrated into the script.
