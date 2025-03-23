@@ -121,7 +121,7 @@ services:
   
 
   delay-processor:
-    build: ./delay-processor/dockerfile
+    build: ./delay-processor
     init: true
     container_name: delay-processor
     networks:
