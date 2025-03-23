@@ -1,0 +1,17 @@
+TP1
+CENG 519 Network Security
+Spring semester 2024/2025
+Ihssane EL JAZOULI
+
+Introduction
+In this project, I modified the middlebox system to develop a processor in Python that introduces random delays to Ethernet frames. The project was based on an example from the GitHub repository, where I followed the instructions to run the containers and verify the system's basic functionality before making my modifications. The delay processor was then added to handle the introduction of delays to the packets, which also includes calculating the round-trip time (RTT) and includes functions to plot the results.
+
+Process Overview
+I first followed the example provided in the GitHub repository to run the containers. This step worked correctly, and the system functioned as expected. Afterward, I moved on to adding my custom delay processor.
+I created a new Python file, delay-processor.py, which introduces random delays to the packets. The delays are generated using an exponential distribution, and the script also calculates the round-trip time (RTT) of the packets. Additionally, functions to plot the RTT and delay statistics are integrated into the script.
+After implementing the delay processor, I ran the containers. The system seemed to be functioning well, delays were being added to the packets and sec and insec seemed to communicate because the outputs had “Hello, InSecureNet!” and “Hi SecureNet”. However, there was an issue with the data visualization as no plots were generated.
+Upon inspecting the shell output in the delay-processor container, I noticed the message "Delay added" indicating the delays were being correctly applied. However, the output also included "Received packet: None," suggesting that packets were not being properly received or processed, which may explain why no plots were generated.
+
+
+Conclusion
+In summary, the delay processor was successfully added to the system, and random delays were introduced to the packets. However, an issue persists with packet reception, as indicated by the "Received packet: None" message. I am still working on this issue to determine the cause of the problem and to ensure that the packet processing works as expected. The plotting functions will also be reviewed to ensure they display the desired data.
