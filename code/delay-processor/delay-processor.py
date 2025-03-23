@@ -1,8 +1,24 @@
 import asyncio
 from nats.aio.client import Client as NATS
-import os, random
+import os, random, subprocess, time
 from scapy.all import Ether
+import matplotlib.pyplot as plt
 
+
+# lists to store random delays and RTT values
+delays = []
+rtt_values = []
+
+# Function to calculate RTT for ping packets
+def ping_rtt(destination_ip):
+    ping_cmd = ['ping', '-c', '1', destination_ip]
+    start_time = time.time()
+    subprocess.run(ping_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    end_time = time.time()
+    rtt = (end_time - start_time) * 1000  # Convert to milliseconds
+    return rtt
+
+# Processor function
 async def run():
     nc = NATS()
 
@@ -17,10 +33,11 @@ async def run():
         print(packet.show())
         # Publish the received message to outpktsec and outpktinsec after adding a delay
         delay = random.expovariate(1 / 5e-6)
-        await asyncio.sleep(delay)
+        await asyncio.sleep(delay * 1000)  # Convert to milliseconds
+        delays.append(delay * 1000)
         print("delay added")
 
-        
+
         if subject == "inpktsec":
             await nc.publish("outpktinsec", msg.data)
         else:
@@ -39,5 +56,29 @@ async def run():
         print("Disconnecting...")
         await nc.close()
 
+    calculate_rtt()
+    plot_data()
+
+def calculate_rtt():
+    for _ in range(10):  #  10 pings
+        rtt = ping_rtt("insec") 
+        rtt_values.append(rtt)
+
+def plot_data():
+    #plotting the random delays
+    plt.plot(delays, label="Random delays")
+    plt.xlabel("Packet Number")
+    plt.ylabel("Delays (ms)")
+    plt.title("Random Delay over Packets")
+    plt.legend()
+
+    #plotting rtt
+    plt.plot(rtt_values, label="RTT (ms)", color="r")
+    plt.xlabel("Packet Number")
+    plt.ylabel("RTT (ms)")
+    plt.title("RTT over Packets")
+    plt.legend()
+
+    plt.show()
 if __name__ == '__main__':
     asyncio.run(run())
