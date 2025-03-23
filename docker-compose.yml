@@ -118,6 +118,27 @@ services:
     privileged: true
     cap_add:
     - NET_ADMIN
+  
+
+  delay-processor:
+    build: ./delay-processor/dockerfile
+    init: true
+    container_name: delay-processor
+    networks:
+      intnet:
+    command: ['/bin/bash', '/config/configure-processor.sh']
+    volumes:
+    - ./config:/config
+    - ./code/delay-processor:/code/delay-processor
+    environment:
+    - SECURE_NET=${SECURE_NET}
+    - SECURENET_GATEWAY=${SECURENET_GATEWAY}
+    - INSECURE_NET=${INSECURE_NET}
+    - INSECURENET_GATEWAY=${INSECURENET_GATEWAY}
+    - SECURENET_HOST_IP=${SECURENET_HOST_IP}
+    - INSECURENET_HOST_IP=${INSECURENET_HOST_IP}
+    - NATS_SURVEYOR_SERVERS=${NATS_SURVEYOR_SERVERS}
+
 
 
   nats:
