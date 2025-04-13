@@ -1,5 +1,5 @@
 {
-    "receiver_ip": "insec", 
+    "receiver_ip": "INSECURENET_HOST_IP", 
     "message": "hi",
     "delay_0": 100,
     "delay_1": 300,

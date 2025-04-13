@@ -1,3 +1,4 @@
+import os
 import time
 import argparse
 import subprocess
@@ -19,7 +20,8 @@ def main():
     args = parser.parse_args()
     
     config = load_config(args.config)
-    ip = config["receiver_ip"]
+
+    ip = os.getenv(config["receiver_ip"])
     delay_0 = config["delay_0"]
     delay_1 = config["delay_1"]
     message = config["message"]
