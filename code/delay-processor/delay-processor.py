@@ -66,7 +66,7 @@ async def run():
         await calculate_rtt()
         print("RTT values:", rtt_values)
         plot_delays()
-        plot_rtt
+        plot_rtt()
 
 
 
