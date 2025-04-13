@@ -1,16 +1,19 @@
 import os
 import time
 import argparse
-import subprocess
 import json
+from scapy.all import IP, ICMP, send
+
+host = os.getenv('INSECURENET_HOST_IP')
+port = 8888
 
 def load_config(path):
     with open(path, "r") as f:
         return json.load(f)
 
 def send_icmp_packet(dest_ip):
-    subprocess.run(["ping", "-c", "1", dest_ip], stdout=subprocess.DEVNULL)
-
+    pkt = IP(dst=dest_ip)/ICMP()
+    send(pkt, verbose=0)
 def encode_message(message):
     return ''.join(format(ord(c), '08b') for c in message)
 
@@ -20,8 +23,7 @@ def main():
     args = parser.parse_args()
     
     config = load_config(args.config)
-
-    ip = os.getenv(config["receiver_ip"])
+    ip = config["receiver_ip"]
     delay_0 = config["delay_0"]
     delay_1 = config["delay_1"]
     message = config["message"]
@@ -31,7 +33,11 @@ def main():
     
     for bit in binary_message:
         send_icmp_packet(ip)
-        delay = delay_1 if bit == '1' else delay_0
+        print("bit sent")
+        if bit == '1': 
+            delay = delay_1 
+        else :
+            delay= delay_0
         time.sleep(delay / 1000.0)
 
 if __name__ == "__main__":

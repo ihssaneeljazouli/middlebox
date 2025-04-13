@@ -6,13 +6,16 @@ from scapy.all import sniff, IP, ICMP
 timestamps = []
 
 def packet_callback(packet):
-    if ICMP in packet and packet[ICMP].type == 8:
-        timestamps.append(time.time())
+    if ICMP in packet:
+        ts = time.time()
+        print(f"ICMP packet received at {ts}")
+        timestamps.append(ts)
 
 def decode_bits(timestamps, threshold):
     bits = ""
     for i in range(1, len(timestamps)):
         delta = (timestamps[i] - timestamps[i - 1]) * 1000  # ms
+        print(f"Δt = {delta:.2f} ms")
         bit = '1' if delta > threshold else '0'
         bits += bit
     return bits
@@ -27,12 +30,14 @@ def main():
     args = parser.parse_args()
     
     config = load_config(args.config)
-    duration = config["capture_duration"]
     threshold = config["threshold"]
+    duration = config["capture_duration"]
     
+
     print("Sniffing...")
-    sniff(filter="icmp", prn=packet_callback, timeout=duration)
-    
+    #sniff(filter="icmp", prn=packet_callback, timeout=duration)
+    sniff(filter="icmp", iface="eth0", prn=packet_callback, store=0,timeout=duration)
+
     bitstream = decode_bits(timestamps, threshold)
     message = bits_to_string(bitstream)
     print(f"Decoded bitstream: {bitstream}")

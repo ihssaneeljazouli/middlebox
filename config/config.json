@@ -1,0 +1,9 @@
+{
+    "receiver_ip": "10.0.0.22", 
+    "message": "hi",
+    "delay_0": 30,
+    "delay_1": 120,
+    "threshold": 80,
+    "capture_duration": 50
+  }
+  

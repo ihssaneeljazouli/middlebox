@@ -4,8 +4,9 @@ services:
     init: true
     container_name: sec
     networks:
-      routed:
-        ipv4_address: ${SECURENET_HOST_IP}
+      exnet:
+        ipv4_address: 10.0.0.22
+      inet:
     tty: true
     command: ['/bin/bash', '/config/configure-sec.sh']
     depends_on:
@@ -108,52 +109,7 @@ services:
     networks:
       exnet:
         ipv4_address: ${INSECURENET_HOST_IP}
-    environment:
-    - SECURE_NET=${SECURE_NET}
-    - SECURENET_GATEWAY=${SECURENET_GATEWAY}
-    - INSECURE_NET=${INSECURE_NET}
-    - INSECURENET_GATEWAY=${INSECURENET_GATEWAY}
-    - SECURENET_HOST_IP=${SECURENET_HOST_IP}
-    - INSECURENET_HOST_IP=${INSECURENET_HOST_IP}
-    privileged: true
-    cap_add:
-    - NET_ADMIN
-  
-  covert-receiver:
-    build: ./covert_channel-icmp/receiver
-    init: true
-    container_name: covert-receiver
-    tty: true
-    command: ["python3", "receiver.py"]    
-    volumes:
-    - ./config:/config
-    - ./code/covert_channel-icmp/receiver:/code/covert_channel-icmp/receiver
-    networks:
-      exnet:
-        ipv4_address: ${INSECURENET_HOST_IP}
-    environment:
-    - SECURE_NET=${SECURE_NET}
-    - SECURENET_GATEWAY=${SECURENET_GATEWAY}
-    - INSECURE_NET=${INSECURE_NET}
-    - INSECURENET_GATEWAY=${INSECURENET_GATEWAY}
-    - SECURENET_HOST_IP=${SECURENET_HOST_IP}
-    - INSECURENET_HOST_IP=${INSECURENET_HOST_IP}
-    privileged: true
-    cap_add:
-    - NET_ADMIN
-  
-  covert-sender:
-    build: ./covert_channel-icmp/sender
-    init: true
-    container_name: covert-sender
-    tty: true
-    command: ["python3", "sender.py"]    
-    volumes:
-    - ./config:/config
-    - ./code/covert_channel-icmp/sender:/code/covert_channel-icmp/sender
-    networks:
-      routed:
-        ipv4_address: ${SECURENET_HOST_IP}
+      inet:
     environment:
     - SECURE_NET=${SECURE_NET}
     - SECURENET_GATEWAY=${SECURENET_GATEWAY}
@@ -183,7 +139,6 @@ services:
     - SECURENET_HOST_IP=${SECURENET_HOST_IP}
     - INSECURENET_HOST_IP=${INSECURENET_HOST_IP}
     - NATS_SURVEYOR_SERVERS=${NATS_SURVEYOR_SERVERS}
-
 
 
   nats:
@@ -264,6 +219,7 @@ networks:
   exnet:
     name: exnet
     driver: macvlan
+    external: true
     enable_ipv6: false
     ipam:
       config:
@@ -277,3 +233,5 @@ networks:
       config:
         - subnet: ${NATS_NET}
           gateway: ${NATS_GATEWAY}
+  inet: 
+    driver : bridge

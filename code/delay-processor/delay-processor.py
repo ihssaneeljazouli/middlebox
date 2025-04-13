@@ -63,10 +63,10 @@ async def run():
         print("Disconnecting...")
     finally:
         await nc.close()
-        await calculate_rtt()
-        print("RTT values:", rtt_values)
-        plot_delays()
-        plot_rtt()
+        #await calculate_rtt()
+        #print("RTT values:", rtt_values)
+        #plot_delays()
+        #plot_rtt()
 
 
 
