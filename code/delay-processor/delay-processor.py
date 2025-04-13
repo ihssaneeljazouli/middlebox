@@ -10,11 +10,19 @@ delays = []
 rtt_values = []
 
 # Function to calculate RTT for ping packets
-def ping_rtt(destination_ip):
+async def ping_rtt(destination_ip):
     ping_cmd = ['ping', '-c', '1', destination_ip]
     start_time = time.time()
-    subprocess.run(ping_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    process = await asyncio.create_subprocess_exec(
+        *ping_cmd,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE
+    )
+
+    stdout, stderr = await process.communicate()
     end_time = time.time()
+
     rtt = (end_time - start_time) * 1000  # Convert to milliseconds
     return rtt
 
@@ -28,12 +36,12 @@ async def run():
     async def message_handler(msg):
         subject = msg.subject
         data = msg.data #.decode()
-        #print(f"Received a message on '{subject}': {data}")
+        print(f"Received a message on '{subject}': {data}")
         packet = Ether(data)
-        print("Received packet",packet.show())
+        packet.show()
         # Publish the received message to outpktsec and outpktinsec after adding a delay
         delay = random.expovariate(1 / 5e-6)
-        await asyncio.sleep(delay * 1000)  # Convert to milliseconds
+        await asyncio.sleep(delay)  # Convert to milliseconds
         delays.append(delay * 1000)
         print("delay added")
 
@@ -56,13 +64,15 @@ async def run():
         print("Disconnecting...")
         await nc.close()
 
-    calculate_rtt()
+    await calculate_rtt()
     plot_data()
 
-def calculate_rtt():
-    for _ in range(10):  #  10 pings
-        rtt = ping_rtt("insec") 
+
+async def calculate_rtt():
+    for _ in range(10):
+        rtt = await ping_rtt("insec")
         rtt_values.append(rtt)
+
 
 def plot_data():
     #plotting the random delays
