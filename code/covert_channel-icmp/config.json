@@ -1,0 +1,9 @@
+{
+    "receiver_ip": "insec", 
+    "message": "hi",
+    "delay_0": 100,
+    "delay_1": 300,
+    "threshold": 200,
+    "capture_duration": 10
+  }
+  
