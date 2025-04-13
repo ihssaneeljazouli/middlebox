@@ -16,6 +16,9 @@ def decode_bits(timestamps, threshold):
     for i in range(1, len(timestamps)):
         delta = (timestamps[i] - timestamps[i - 1]) * 1000  # ms
         print(f"Δt = {delta:.2f} ms")
+        if delta < 50:
+            continue  # ignore noise 
+
         bit = '1' if delta > threshold else '0'
         bits += bit
     return bits

@@ -31,14 +31,13 @@ def main():
     binary_message = encode_message(message)
     print(f"Sending: {message} -> {binary_message}")
     
+    prev = time.time()
     for bit in binary_message:
+        now = time.time()
+        print(f"Bit: {bit}, Δt since last: {(now - prev)*1000:.2f} ms")
+        prev = now
         send_icmp_packet(ip)
-        print("bit sent")
-        if bit == '1': 
-            delay = delay_1 
-        else :
-            delay= delay_0
+        delay = delay_1 if bit == '1' else delay_0
         time.sleep(delay / 1000.0)
-
 if __name__ == "__main__":
     main()
