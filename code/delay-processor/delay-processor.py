@@ -40,8 +40,7 @@ async def run():
         packet = Ether(data)
         packet.show()
         # Publish the received message to outpktsec and outpktinsec after adding a delay
-        delay = random.expovariate(1 / 5) (1e-6)
-        await asyncio.sleep(delay)  
+        delay = random.expovariate(1 / 5) / 1e6  # delay in seconds  
         delays.append(delay * 1000)
         print("delay added")
 
@@ -60,10 +59,12 @@ async def run():
     try:
         while True:
             await asyncio.sleep(1)
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, asyncio.CancelledError):
         print("Disconnecting...")
+    finally:
         await nc.close()
         await calculate_rtt()
+        print("RTT values:", rtt_values)
         plot_delays()
         plot_rtt
 
@@ -94,5 +95,7 @@ def plot_rtt():
     plt.legend()
     plt.show()
     plt.savefig("rtts.png")
+
+
 if __name__ == '__main__':
     asyncio.run(run())
