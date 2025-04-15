@@ -39,5 +39,6 @@ def main():
         send_icmp_packet(ip)
         delay = delay_1 if bit == '1' else delay_0
         time.sleep(delay / 1000.0)
+    send_icmp_packet(ip) # Add one final ping to "close out" the last delay (for the delats to be calculated)
 if __name__ == "__main__":
     main()

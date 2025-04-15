@@ -5,11 +5,16 @@ from scapy.all import sniff, IP, ICMP
 
 timestamps = []
 
+last_ts = [0]  # using list for mutability inside callback
+
 def packet_callback(packet):
     if ICMP in packet:
         ts = time.time()
-        print(f"ICMP packet received at {ts}")
-        timestamps.append(ts)
+        if ts - last_ts[0] > 0.05:  # filter out duplicates (<50 ms)
+            print(f"ICMP packet received at {ts}")
+            timestamps.append(ts)
+            last_ts[0] = ts
+
 
 def decode_bits(timestamps, threshold):
     bits = ""
@@ -24,8 +29,12 @@ def decode_bits(timestamps, threshold):
     return bits
 
 def bits_to_string(bits):
+    if len(bits) % 8 != 0:
+        print("⚠️ Warning: Bitstream length is not a multiple of 8")
+        bits = bits.ljust((len(bits) // 8 + 1) * 8, '0')  # pad with zeros
     chars = [chr(int(bits[i:i+8], 2)) for i in range(0, len(bits), 8)]
     return ''.join(chars)
+
 
 def main():
     parser = argparse.ArgumentParser()
