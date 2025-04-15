@@ -1,7 +1,7 @@
 import argparse
 import json
 import time
-from scapy.all import sniff, IP, ICMP
+from scapy.all import sniff, ICMP
 
 timestamps = []
 
@@ -30,7 +30,7 @@ def decode_bits(timestamps, threshold):
 
 def bits_to_string(bits):
     if len(bits) % 8 != 0:
-        print("⚠️ Warning: Bitstream length is not a multiple of 8")
+        print("Warning: Bitstream length is not a multiple of 8")
         bits = bits.ljust((len(bits) // 8 + 1) * 8, '0')  # pad with zeros
     chars = [chr(int(bits[i:i+8], 2)) for i in range(0, len(bits), 8)]
     return ''.join(chars)
@@ -44,16 +44,20 @@ def main():
     config = load_config(args.config)
     threshold = config["threshold"]
     duration = config["capture_duration"]
-    
+    expected_msg = config['message']
+
 
     print("Sniffing...")
-    #sniff(filter="icmp", prn=packet_callback, timeout=duration)
     sniff(filter="icmp", iface="eth0", prn=packet_callback, store=0,timeout=duration)
 
     bitstream = decode_bits(timestamps, threshold)
     message = bits_to_string(bitstream)
     print(f"Decoded bitstream: {bitstream}")
     print(f"Decoded message: {message}")
+
+
+    accuracy = (sum(a == b for a, b in zip(message, expected_msg)) / len(expected_msg)) * 100
+    print(f"RESULT accuracy={accuracy:.2f}")
 
 def load_config(path):
     with open(path, "r") as f:
