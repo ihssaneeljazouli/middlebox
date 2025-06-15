@@ -3,7 +3,7 @@ import time
 import numpy as np
 from scapy.all import sniff, ICMP
 
-BATCH_SIZE = 5
+BATCH_SIZE = 10
 DELAY_SPIKE_THRESHOLD = 0.15
 arrival_times = []
 
