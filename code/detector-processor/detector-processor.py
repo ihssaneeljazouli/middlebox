@@ -42,7 +42,7 @@ async def run():
         data = msg.data
         print(f"Received a message on '{subject}': {data}")
         packet = Ether(data)
-        print(packet.show())
+        packet.show()
         # Log arrival timestamp
         arrival_times.append(time.time())
 
